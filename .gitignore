@@ -1,0 +1,16 @@
+# Ignore build output
+**/target/
+# Eclipse & IntelliJ config
+**/.classpath **/.project **/.settings/ **/.idea/ **/*.iml
+# Node/Vite/Angular temporary files
+**/node_modules/ **/dist/ **/.angular/ **/.cache/
+# OS-specific files
+.DS_Store Thumbs.db
+# Ignore build output
+**/target/
+# Eclipse & IntelliJ config
+**/.classpath **/.project **/.settings/ **/.idea/ **/*.iml
+# Node/Vite/Angular temporary files
+**/node_modules/ **/dist/ **/.angular/ **/.cache/
+# OS-specific files
+.DS_Store Thumbs.db
