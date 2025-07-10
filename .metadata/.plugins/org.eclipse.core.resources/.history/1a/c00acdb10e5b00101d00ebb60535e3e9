@@ -1,0 +1,7 @@
+package com.bgsw.repository.inventoryrepository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface InventoryTransactionsRepository extends JpaRepository<T, ID> {
+
+}

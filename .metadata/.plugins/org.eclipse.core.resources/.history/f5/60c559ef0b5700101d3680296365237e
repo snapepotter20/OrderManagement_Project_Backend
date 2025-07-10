@@ -1,0 +1,22 @@
+package com.bgsw.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bgsw.entity.DeliveryTracking;
+import com.bgsw.repository.DeliveryTrackingRepository;
+
+@Service
+public class DeliveryTrackingService {
+
+    @Autowired
+    private DeliveryTrackingRepository deliveryRepo;
+
+    public DeliveryTracking trackOrder(Long orderId) {
+        return deliveryRepo.findById(orderId).orElse(null);
+    }
+
+    public DeliveryTracking updateTracking(DeliveryTracking tracking) {
+        return deliveryRepo.save(tracking);
+    }
+}

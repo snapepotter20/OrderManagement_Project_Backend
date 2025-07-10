@@ -1,0 +1,19 @@
+spring.application.name=OrderManagement
+server.port = 8092
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+spring.datasource.username=hr
+spring.datasource.password=hr
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.from-at_sql=true
+spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+jwt.secret=BXX56ZphcKjEENTm7P1SAQ8ZNiuPovX/Befb0Qcg6cU=# 
+
+#SMTP configuration for Gmail
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=reavensnape07@gmail.com
+spring.mail.password=admin1234
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true

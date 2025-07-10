@@ -1,0 +1,5 @@
+package com.bgsw.entity.inventoryentity;
+
+public class InventoryTransactions {
+
+}

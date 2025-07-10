@@ -1,0 +1,5 @@
+package com.bgsw.config;
+
+public class MailConfig {
+
+}

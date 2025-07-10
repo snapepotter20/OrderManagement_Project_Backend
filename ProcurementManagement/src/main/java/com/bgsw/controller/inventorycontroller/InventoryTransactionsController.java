@@ -1,0 +1,29 @@
+package com.bgsw.controller.inventorycontroller;
+import com.bgsw.entity.inventoryentity.InventoryTransactions;
+import com.bgsw.service.inventoryservice.InventoryTransactionsService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/inventorytransactions")
+@CrossOrigin("http://localhost:4200")
+public class InventoryTransactionsController {
+
+    @Autowired
+    private InventoryTransactionsService transactionService;
+
+    @PostMapping("/create")
+    public ResponseEntity<InventoryTransactions> createTransaction(@RequestBody InventoryTransactions transaction) {
+        InventoryTransactions saved = transactionService.saveTransaction(transaction);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<InventoryTransactions>> getAllTransactions() {
+        return ResponseEntity.ok(transactionService.getAllTransactions());
+    }
+}

@@ -1,0 +1,31 @@
+package com.bgsw.controller;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bgsw.service.EmailService;
+
+@RestController
+@RequestMapping("/api")
+public class ForgotPasswordController {
+
+    @Autowired
+    private EmailService emailService;
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String otp = String.valueOf((int) (Math.random() * 9000 + 1000)); // Generate 4-digit OTP
+
+        // Save OTP in DB or cache (Redis) here – skipped for brevity
+        emailService.sendOtpEmail(email, otp);
+
+        return ResponseEntity.ok("OTP sent successfully");
+    }
+}

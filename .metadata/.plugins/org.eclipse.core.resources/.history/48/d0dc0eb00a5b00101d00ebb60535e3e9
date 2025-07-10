@@ -1,0 +1,62 @@
+package com.bgsw.entity.inventoryentity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="RAW_MATERIALS")
+public class RawMaterials {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+    private int material_id;
+	private String material_name;
+	private String material_desc;
+	private double material_price;
+	private String unitofmeasure;
+	public RawMaterials() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public RawMaterials(int material_id, String material_name, String material_desc, double material_price) {
+		super();
+		this.material_id = material_id;
+		this.material_name = material_name;
+		this.material_desc = material_desc;
+		this.material_price = material_price;
+	}
+	public int getMaterial_id() {
+		return material_id;
+	}
+	public void setMaterial_id(int material_id) {
+		this.material_id = material_id;
+	}
+	public String getMaterial_name() {
+		return material_name;
+	}
+	public void setMaterial_name(String material_name) {
+		this.material_name = material_name;
+	}
+	public String getMaterial_desc() {
+		return material_desc;
+	}
+	public void setMaterial_desc(String material_desc) {
+		this.material_desc = material_desc;
+	}
+	public double getMaterial_price() {
+		return material_price;
+	}
+	public void setMaterial_price(double material_price) {
+		this.material_price = material_price;
+	}
+	@Override
+	public String toString() {
+		return "RawMaterials [material_id=" + material_id + ", material_name=" + material_name + ", material_desc="
+				+ material_desc + ", material_price=" + material_price + "]";
+	}
+	
+	
+	
+}
