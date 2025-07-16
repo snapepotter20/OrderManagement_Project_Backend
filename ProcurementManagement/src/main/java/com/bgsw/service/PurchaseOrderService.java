@@ -1,5 +1,6 @@
 package com.bgsw.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class PurchaseOrderService {
 
     @Autowired
     private PurchaseOrderRepository orderRepo;
-    
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -32,7 +33,7 @@ public class PurchaseOrderService {
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
                 item.setProduct(product);
-                item.setPurchaseOrder(order); // bidirectional
+                item.setPurchaseOrder(order); // bidirectional mapping
             }
         }
 
@@ -41,5 +42,9 @@ public class PurchaseOrderService {
 
     public Optional<PurchaseOrder> getOrderById(Long id) {
         return orderRepo.findById(id);
+    }
+
+    public List<PurchaseOrder> getFilteredOrders(String status, LocalDate date, Long userId) {
+        return orderRepo.findByFilters(date, status, userId);
     }
 }

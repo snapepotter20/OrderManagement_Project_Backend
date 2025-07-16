@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "products")
@@ -38,6 +39,9 @@ public class Product {
     private Double productUnitPrice;
 
     private Double productQuantity;
+
+@Transient
+private Double transactionQuantity;
     
     @ManyToOne
     @JoinColumn(name="RAW_MATERIAL_ID")
@@ -90,7 +94,14 @@ public class Product {
 	public void setProductQuantity(Double productQuantity) {
 		this.productQuantity = productQuantity;
 	}
+	
+	public Double getTransactionQuantity() {
+		return transactionQuantity;
+	}
 
-    
+	public void setTransactionQuantity(Double transactionQuantity) {
+		this.transactionQuantity = transactionQuantity;
+	}
+
 }
 

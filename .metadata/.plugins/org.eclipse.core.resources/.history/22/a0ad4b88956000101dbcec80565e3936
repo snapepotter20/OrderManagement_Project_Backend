@@ -1,0 +1,59 @@
+package com.bgsw.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bgsw.entity.Product;
+import com.bgsw.entity.PurchaseOrder;
+import com.bgsw.entity.PurchaseOrderItem;
+import com.bgsw.repository.ProductRepository;
+import com.bgsw.repository.PurchaseOrderRepository;
+
+@Service
+public class PurchaseOrderService {
+
+    @Autowired
+    private PurchaseOrderRepository orderRepo;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    public List<PurchaseOrder> getAllOrders() {
+        return orderRepo.findAll();
+    }
+
+    public PurchaseOrder createOrder(PurchaseOrder order) {
+        if (order.getItems() != null) {
+            for (PurchaseOrderItem item : order.getItems()) {
+                Long productId = item.getProduct().getProductId();
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+                item.setProduct(product);
+                item.setPurchaseOrder(order); // bidirectional
+            }
+        }
+
+        return orderRepo.save(order);
+    }
+
+    public Optional<PurchaseOrder> getOrderById(Long id) {
+        return orderRepo.findById(id);
+    }
+
+    public List<PurchaseOrder> getFilteredOrders(String status, LocalDate date, Long userId) {
+//        LocalDate parsedDate = null;
+//
+//        if (date != null && !date.isBlank()) {
+//            parsedDate = LocalDate.parse(date.trim());
+//        }
+//
+//        String cleanStatus = (status != null && !status.isBlank()) ? status.trim().toLowerCase() : null;
+//
+//        return orderRepo.findByFilters(userId, cleanStatus, parsedDate);
+    	return orderRepo.findByFilters(date, status);
+    }
+}

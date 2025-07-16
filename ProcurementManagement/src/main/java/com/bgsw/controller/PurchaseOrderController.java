@@ -1,26 +1,19 @@
 package com.bgsw.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bgsw.entity.PurchaseOrder;
 import com.bgsw.service.PurchaseOrderService;
-import com.bgsw.util.JWTUtil;
 import com.bgsw.util.SecurityUtil;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200") 
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/procurement/purchase-orders")
 @PreAuthorize("hasRole('PROCUREMENT_OFFICER')")
 public class PurchaseOrderController {
@@ -28,9 +21,6 @@ public class PurchaseOrderController {
     @Autowired
     private PurchaseOrderService purchaseOrderService;
 
-//    @Autowired
-//    private JWTUtil jwtUtil;
-    
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -41,11 +31,8 @@ public class PurchaseOrderController {
     ) {
         String token = authHeader.replace("Bearer ", "");
         Long userId = securityUtil.extractUserId(token);
-
-        // Set the userId (ignore any client-provided value)
         order.setUserId(userId);
 
-        // Set purchaseOrder reference in items (needed for bidirectional mapping)
         if (order.getItems() != null) {
             order.getItems().forEach(item -> item.setPurchaseOrder(order));
         }
@@ -55,16 +42,31 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/getallorders")
-    public ResponseEntity<List<PurchaseOrder>> getAllOrders() {
-        return ResponseEntity.ok(purchaseOrderService.getAllOrders());
+    public ResponseEntity<List<PurchaseOrder>> getFilteredOrders(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String date
+    ) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = securityUtil.extractUserId(token);
+
+        LocalDate parsedDate = null;
+        if (date != null && !date.isEmpty()) {
+            try {
+                parsedDate = LocalDate.parse(date.trim());
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
+        String cleanStatus = (status != null && !status.isBlank()) ? status.trim().toLowerCase() : null;
+        return ResponseEntity.ok(purchaseOrderService.getFilteredOrders(cleanStatus, parsedDate, userId));
     }
 
-    @GetMapping("getorder/{id}")
+    @GetMapping("/getorder/{id}")
     public ResponseEntity<PurchaseOrder> getOrder(@PathVariable Long id) {
         return purchaseOrderService.getOrderById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 }
-
-
