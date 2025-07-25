@@ -47,7 +47,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/api/procurement/purchase-orders", "/api/procurement/purchase-orders/createorder").hasRole("PROCUREMENT_OFFICER")
+            		.requestMatchers("/api/procurement/purchase-orders/**", "/api/procurement/purchase-orders/createorder").hasRole("PROCUREMENT_OFFICER")
 //                .requestMatchers("/api/adduser").hasRole("ADMIN")
 //                .requestMatchers("/api/getallusers").permitAll()
 //                .requestMatchers("/api/deleteuser/{id}").permitAll()

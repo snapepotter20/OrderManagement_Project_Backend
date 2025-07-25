@@ -1,14 +1,18 @@
 package com.bgsw.controller;
 
 import java.time.LocalDate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.bgsw.entity.PurchaseOrder;
+import com.bgsw.service.InvoiceService;
 import com.bgsw.service.PurchaseOrderService;
 import com.bgsw.util.SecurityUtil;
 
@@ -23,6 +27,9 @@ public class PurchaseOrderController {
 
     @Autowired
     private SecurityUtil securityUtil;
+    
+    @Autowired
+    private InvoiceService invoiceService;
 
     @PostMapping("/createorder")
     public ResponseEntity<PurchaseOrder> createOrder(
@@ -69,4 +76,23 @@ public class PurchaseOrderController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/generate-invoice/{orderId}")
+    public ResponseEntity<ByteArrayResource> generateInvoice(@PathVariable Long orderId) {
+        byte[] pdf = invoiceService.generateInvoicePdf(orderId);
+        if (pdf == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(pdf);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=invoice_" + orderId + ".pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
 }
+

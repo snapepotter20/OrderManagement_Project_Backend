@@ -80,6 +80,7 @@ user.setRole(role);
 	    existingUser.setUsername(updatedUser.getUsername());
 	    existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
 	    existingUser.setEmail(updatedUser.getEmail());
+	    existingUser.setPhoneno(updatedUser.getPhoneno());
 
 	    // Fetch and set role properly
 	    Long roleId = updatedUser.getRole().getRole_id();

@@ -15,6 +15,7 @@ public class User {
     private String password;
     private String email;
     private Boolean isActive;
+    private Long Phoneno;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime last_login;
@@ -94,8 +95,18 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+    
+    
 
-    @Override
+    public Long getPhoneno() {
+		return Phoneno;
+	}
+
+	public void setPhoneno(Long phoneno) {
+		Phoneno = phoneno;
+	}
+
+	@Override
     public String toString() {
         return "User [user_id=" + user_id + ", username=" + username + ", password=" + password +
                 ", email=" + email + ", isActive=" + isActive + ", last_login=" + last_login + ", role=" + role + "]";

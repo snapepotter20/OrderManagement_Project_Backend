@@ -17,4 +17,6 @@
     <fullyQualifiedTypeName name="com.bgsw.service.EmailService"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PostMapping"/>
     <fullyQualifiedTypeName name="java.net.ResponseCache"/>
+    <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.Query"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Transient"/>
 </qualifiedTypeNameHistroy>

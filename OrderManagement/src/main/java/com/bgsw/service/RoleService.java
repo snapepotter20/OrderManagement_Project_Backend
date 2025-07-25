@@ -47,6 +47,7 @@ public class RoleService implements CommandLineRunner {
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("admin123"));
         admin.setEmail("admin@example.com");
+        admin.setPhoneno(8096845632L);
         admin.setIsActive(true);
         admin.setRole(roles.get("ADMIN"));
         userRepository.save(admin);

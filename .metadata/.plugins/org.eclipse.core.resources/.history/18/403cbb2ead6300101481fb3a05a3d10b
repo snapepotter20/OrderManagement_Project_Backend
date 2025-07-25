@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+      /* Include styles for logo, tables, etc. */
+      h2 { color: navy; }
+      table { width:100%; border-collapse: collapse; }
+      th, td { border: 1px solid #ddd; padding: 8px; }
+    </style>
+</head>
+<body>
+    <h2>Purchase Invoice</h2>
+    <p><strong>Order ID:</strong> <span th:text="${order.purchaseOrderId}" /></p>
+    <p><strong>Date:</strong> <span th:text="${order.orderDate}" /></p>
+    <hr />
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Qty</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${order.items}">
+                <td th:text="${item.product.productId}" />
+                <td th:text="${item.quantity}" />
+                <td th:text="${item.cost}" />
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

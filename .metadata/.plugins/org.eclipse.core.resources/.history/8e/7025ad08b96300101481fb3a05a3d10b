@@ -1,0 +1,62 @@
+<!-- Invoice Header -->
+<header>
+  <h1>Invoice</h1>
+  <p><strong>Invoice Number:</strong> <span th:text="${invoiceNumber}"></span></p>
+  <p><strong>Invoice Date:</strong> <span th:text="${invoiceDate}"></span></p>
+  <p><strong>Order ID:</strong> <span th:text="${order.purchaseOrderId}"></span></p>
+  <p><strong>Order Date:</strong> <span th:text="${order.orderDate}"></span></p>
+  <p><strong>Payment Method:</strong> <span th:text="${order.paymentMethod}"></span></p>
+</header>
+
+<!-- Seller Details -->
+<div>
+  <strong>Sold By:</strong> <span th:text="${seller.name}"></span><br>
+  <span th:text="${seller.address}"></span><br>
+  <span><strong>GSTIN:</strong> <span th:text="${seller.gstin}"></span></span><br>
+  <span><strong>Contact:</strong> <span th:text="${seller.supportEmail}"></span></span>
+</div>
+
+<!-- Buyer/Shipping Details -->
+<div>
+  <strong>Billing To:</strong><br>
+  <span th:text="${buyer.name}"></span><br>
+  <span th:text="${buyer.address}"></span><br>
+  <strong>Shipping To:</strong><br>
+  <span th:text="${shipping.name}"></span><br>
+  <span th:text="${shipping.address}"></span>
+</div>
+
+<!-- Items Table (with Tax & Discount columns) -->
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Product ID</th>
+      <th>Product Name</th>
+      <th>Qty</th>
+      <th>Unit Price</th>
+      <th>Discount</th>
+      <th>Tax (%)</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="item, stat : ${order.items}">
+      <td th:text="${stat.index+1}"></td>
+      <td th:text="${item.product.productId}"></td>
+      <td th:text="${item.product.productName}"></td>
+      <td th:text="${item.quantity}"></td>
+      <td th:text="${item.unitPrice}"></td>
+      <td th:text="${item.discount}"></td>
+      <td th:text="${item.taxPercent}"></td>
+      <td th:text="${item.total}"></td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="7" style="text-align:right">Grand Total</td>
+      <td th:text="${order.grandTotal}"></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Footer Note -->
+<p class="footer">Thank you for shopping with us! For support, contact: <span th:text="${seller.supportEmail}"></span></p>
