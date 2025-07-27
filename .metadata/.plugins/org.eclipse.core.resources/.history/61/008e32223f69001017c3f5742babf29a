@@ -1,0 +1,128 @@
+package com.bgsw.entity;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "purchase_orders")
+public class PurchaseOrder {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long purchaseOrderId;
+
+    private Long userId; // Procurement officer
+
+//    @ManyToOne
+//    @JoinColumn(name = "supplier_id")
+//    private Supplier supplier;
+
+    private LocalDate orderDate;
+	private LocalDate expectedDelivery;
+    private String deliveryStatus;
+    
+    @Column(name = "delivery_otp")
+    private String deliveryOtp;
+
+    @Column(name = "is_otp_verified")
+    private Boolean isOtpVerified;
+
+
+    @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PurchaseOrderItem> items;
+
+    @OneToOne(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
+    private DeliveryTracking deliveryTracking;
+    
+    public String getDeliveryOtp() {
+		return deliveryOtp;
+	}
+
+	public void setDeliveryOtp(String deliveryOtp) {
+		this.deliveryOtp = deliveryOtp;
+	}
+
+	public boolean isOtpVerified() {
+		return isOtpVerified;
+	}
+
+	public void setOtpVerified(boolean isOtpVerified) {
+		this.isOtpVerified = isOtpVerified;
+	}
+
+
+	public Long getPurchaseOrderId() {
+		return purchaseOrderId;
+	}
+
+	public void setPurchaseOrderId(Long purchaseOrderId) {
+		this.purchaseOrderId = purchaseOrderId;
+	}
+
+	public Long getUser() {
+		return userId;
+	}
+
+	public void setUserId(Long userId2) {
+		this.userId = userId2;
+	}
+
+	public LocalDate getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(LocalDate orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public LocalDate getExpectedDelivery() {
+		return expectedDelivery;
+	}
+
+	public void setExpectedDelivery(LocalDate expectedDelivery) {
+		this.expectedDelivery = expectedDelivery;
+	}
+
+	public String getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(String deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
+	}
+
+	public List<PurchaseOrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<PurchaseOrderItem> items) {
+		this.items = items;
+	}
+
+	public DeliveryTracking getDeliveryTracking() {
+		return deliveryTracking;
+	}
+
+	public void setDeliveryTracking(DeliveryTracking deliveryTracking) {
+		this.deliveryTracking = deliveryTracking;
+	}
+
+    
+}

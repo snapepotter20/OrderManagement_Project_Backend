@@ -1,0 +1,18 @@
+package com.bgsw.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.bgsw.entity.PurchaseOrder;
+
+public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
+
+    @Query("SELECT po FROM PurchaseOrder po " +
+           "WHERE po.userId = :userId " +
+           "AND (:orderDate IS NULL OR po.orderDate = :orderDate) " +
+           "AND (:status IS NULL OR LOWER(TRIM(po.deliveryStatus)) = :status)")
+    List<PurchaseOrder> findByFilters(LocalDate orderDate, String status, Long userId);
+}

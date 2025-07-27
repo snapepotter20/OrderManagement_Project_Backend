@@ -10,9 +10,15 @@ import com.bgsw.entity.PurchaseOrder;
 
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
 
-    @Query("SELECT po FROM PurchaseOrder po " +
-           "WHERE po.userId = :userId " +
-           "AND (:orderDate IS NULL OR po.orderDate = :orderDate) " +
-           "AND (:status IS NULL OR LOWER(TRIM(po.deliveryStatus)) = :status)")
-    List<PurchaseOrder> findByFilters(LocalDate orderDate, String status, Long userId);
+//    @Query("SELECT po FROM PurchaseOrder po " +
+//           "WHERE po.userId = :userId " +
+//           "AND (:orderDate IS NULL OR po.orderDate = :orderDate) " +
+//           "AND (:status IS NULL OR LOWER(TRIM(po.deliveryStatus)) = :status)")
+//    List<PurchaseOrder> findByFilters(LocalDate orderDate, String status, Long userId);
+	
+	@Query("SELECT po FROM PurchaseOrder po " +
+		       "WHERE (:orderDate IS NULL OR po.orderDate = :orderDate) " +
+		       "AND (:status IS NULL OR LOWER(TRIM(po.deliveryStatus)) = :status)")
+		List<PurchaseOrder> findByFilters(LocalDate orderDate, String status);
+
 }

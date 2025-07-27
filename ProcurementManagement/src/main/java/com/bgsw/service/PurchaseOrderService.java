@@ -3,6 +3,7 @@ package com.bgsw.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,40 @@ public class PurchaseOrderService {
         return orderRepo.findById(id);
     }
 
-    public List<PurchaseOrder> getFilteredOrders(String status, LocalDate date, Long userId) {
-        return orderRepo.findByFilters(date, status, userId);
+//    public List<PurchaseOrder> getFilteredOrders(String status, LocalDate date, Long userId) {
+//    	System.out.println(orderRepo.findByFilters(date, status, userId));
+//        return orderRepo.findByFilters(date, status, userId);
+//    }
+    
+    public List<PurchaseOrder> getFilteredOrders(String status, LocalDate date) {
+        return orderRepo.findByFilters(date, status);
+    }
+
+    
+
+
+    public PurchaseOrder updateOrderStatus(Long orderId, String status, String otp) {
+        PurchaseOrder order = orderRepo.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if ("DISPATCHED".equalsIgnoreCase(status)) {
+            order.setDeliveryStatus("DISPATCHED");
+            order.setDeliveryOtp(generateRandomOtp()); // OTP generation here
+        } else if ("DELIVERED".equalsIgnoreCase(status)) {
+            if (!order.getDeliveryOtp().equals(otp)) {
+                throw new RuntimeException("Invalid OTP");
+            }
+            order.setDeliveryStatus("DELIVERED");
+            order.setIsOtpVerified(true);
+        }
+
+        return orderRepo.save(order);
+    }
+
+    // ✅ Private method to generate a 6-digit OTP
+    private String generateRandomOtp() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000); // generates 6-digit number
+        return String.valueOf(otp);
     }
 }

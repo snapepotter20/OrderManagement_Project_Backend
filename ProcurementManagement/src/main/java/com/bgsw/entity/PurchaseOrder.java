@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,8 +34,15 @@ public class PurchaseOrder {
 //    private Supplier supplier;
 
     private LocalDate orderDate;
-    private LocalDate expectedDelivery;
+	private LocalDate expectedDelivery;
     private String deliveryStatus;
+    
+    @Column(name = "delivery_otp")
+    private String deliveryOtp;
+
+    @Column(name = "is_otp_verified")
+    private Boolean isOtpVerified;
+
 
     @OneToMany(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -42,6 +50,23 @@ public class PurchaseOrder {
 
     @OneToOne(mappedBy = "purchaseOrder", cascade = CascadeType.ALL)
     private DeliveryTracking deliveryTracking;
+    
+    public String getDeliveryOtp() {
+        return deliveryOtp;
+    }
+
+    public void setDeliveryOtp(String deliveryOtp) {
+        this.deliveryOtp = deliveryOtp;
+    }
+
+    public Boolean getIsOtpVerified() {
+        return isOtpVerified;
+    }
+
+    public void setIsOtpVerified(Boolean isOtpVerified) {
+        this.isOtpVerified = isOtpVerified;
+    }
+
 
 	public Long getPurchaseOrderId() {
 		return purchaseOrderId;

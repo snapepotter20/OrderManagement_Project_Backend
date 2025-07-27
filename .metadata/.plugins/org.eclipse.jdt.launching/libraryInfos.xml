@@ -30,7 +30,7 @@
             <entry path="null"/>
         </endorsedDirs>
     </libraryInfo>
-    <libraryInfo home="C:\Program Files\RedHat\java-1.8.0-openjdk" version="1.8.0_452">
+    <libraryInfo home="C:\Program Files\RedHat\java-1.8.0-openjdk" version="1.8.0_462">
         <bootpath>
             <entry path="C:\Program Files\RedHat\java-1.8.0-openjdk\jre\lib\resources.jar"/>
             <entry path="C:\Program Files\RedHat\java-1.8.0-openjdk\jre\lib\rt.jar"/>

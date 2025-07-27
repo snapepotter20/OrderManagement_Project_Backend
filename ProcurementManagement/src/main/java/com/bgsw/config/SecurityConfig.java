@@ -47,7 +47,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/api/procurement/purchase-orders/**", "/api/procurement/purchase-orders/createorder").hasRole("PROCUREMENT_OFFICER")
+            		.requestMatchers("/api/procurement/purchase-orders/getallorders").permitAll()
+            		.requestMatchers("/api/procurement/purchase-orders/**", "/api/procurement/purchase-orders/createorder").permitAll()
+//            		.requestMatchers("/api/procurement/purchase-orders/**", "/api/procurement/purchase-orders/createorder").hasRole("PROCUREMENT_OFFICER")
 //                .requestMatchers("/api/adduser").hasRole("ADMIN")
 //                .requestMatchers("/api/getallusers").permitAll()
 //                .requestMatchers("/api/deleteuser/{id}").permitAll()
@@ -62,6 +64,7 @@ public class SecurityConfig {
             		.requestMatchers("/api/rawmaterials/**").permitAll()
             		.requestMatchers("/api/inventorytransactions/**").permitAll()
             		.requestMatchers("/api/products/**").permitAll()
+            		.requestMatchers("/api/procurement/purchase-orders/update-status/**").permitAll()
                 .anyRequest().authenticated() 
             )
             .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

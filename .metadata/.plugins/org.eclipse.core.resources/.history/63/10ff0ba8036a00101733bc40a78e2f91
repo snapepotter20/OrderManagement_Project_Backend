@@ -1,0 +1,115 @@
+package com.bgsw.controller;
+
+import java.time.LocalDate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import com.bgsw.entity.PurchaseOrder;
+import com.bgsw.service.InvoiceService;
+import com.bgsw.service.PurchaseOrderService;
+import com.bgsw.util.SecurityUtil;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/procurement/purchase-orders")
+//@PreAuthorize("hasRole('PROCUREMENT_OFFICER')")
+public class PurchaseOrderController {
+
+    @Autowired
+    private PurchaseOrderService purchaseOrderService;
+
+    @Autowired
+    private SecurityUtil securityUtil;
+    
+    @Autowired
+    private InvoiceService invoiceService;
+
+    @PostMapping("/createorder")
+    public ResponseEntity<PurchaseOrder> createOrder(
+            @RequestBody PurchaseOrder order,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = securityUtil.extractUserId(token);
+        order.setUserId(userId);
+
+        if (order.getItems() != null) {
+            order.getItems().forEach(item -> item.setPurchaseOrder(order));
+        }
+
+        PurchaseOrder savedOrder = purchaseOrderService.createOrder(order);
+        return ResponseEntity.ok(savedOrder);
+    }
+
+    @GetMapping("/getallorders")
+    public ResponseEntity<List<PurchaseOrder>> getFilteredOrders(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String date
+    ) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = securityUtil.extractUserId(token);
+        
+        System.out.println("Status: " + status + ", Date: " + date + ", UserId: " + userId);
+
+        LocalDate parsedDate = null;
+        if (date != null && !date.isEmpty()) {
+            try {
+                parsedDate = LocalDate.parse(date.trim());
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
+        String cleanStatus = (status != null && !status.isBlank()) ? status.trim().toLowerCase() : null;
+        return ResponseEntity.ok(purchaseOrderService.getFilteredOrders(cleanStatus, parsedDate, userId));
+    }
+
+    @GetMapping("/getorder/{id}")
+    public ResponseEntity<PurchaseOrder> getOrder(@PathVariable Long id) {
+        return purchaseOrderService.getOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping("/generate-invoice/{orderId}")
+    public ResponseEntity<ByteArrayResource> generateInvoice(@PathVariable Long orderId) {
+        byte[] pdf = invoiceService.generateInvoicePdf(orderId);
+        if (pdf == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(pdf);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=invoice_" + orderId + ".pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
+    
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<?> updateOrderStatus(
+        @PathVariable Long id,
+        @RequestParam String status,
+        @RequestParam(required = false) String otp
+    ) {
+        try {
+            PurchaseOrder updated = purchaseOrderService.updateOrderStatus(id, status, otp);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+}
+

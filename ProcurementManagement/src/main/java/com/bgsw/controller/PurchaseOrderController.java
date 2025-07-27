@@ -19,7 +19,7 @@ import com.bgsw.util.SecurityUtil;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/procurement/purchase-orders")
-@PreAuthorize("hasRole('PROCUREMENT_OFFICER')")
+//@PreAuthorize("hasRole('PROCUREMENT_OFFICER')")
 public class PurchaseOrderController {
 
     @Autowired
@@ -48,15 +48,35 @@ public class PurchaseOrderController {
         return ResponseEntity.ok(savedOrder);
     }
 
+//    @GetMapping("/getallorders")
+//    public ResponseEntity<List<PurchaseOrder>> getFilteredOrders(
+//            @RequestHeader("Authorization") String authHeader,
+//            @RequestParam(required = false) String status,
+//            @RequestParam(required = false) String date
+//    ) {
+//        String token = authHeader.replace("Bearer ", "");
+//        Long userId = securityUtil.extractUserId(token);
+//        
+//        System.out.println("Status: " + status + ", Date: " + date + ", UserId: " + userId);
+//
+//        LocalDate parsedDate = null;
+//        if (date != null && !date.isEmpty()) {
+//            try {
+//                parsedDate = LocalDate.parse(date.trim());
+//            } catch (Exception e) {
+//                return ResponseEntity.badRequest().build();
+//            }
+//        }
+//
+//        String cleanStatus = (status != null && !status.isBlank()) ? status.trim().toLowerCase() : null;
+//        return ResponseEntity.ok(purchaseOrderService.getFilteredOrders(cleanStatus, parsedDate, userId));
+//    }
+    
     @GetMapping("/getallorders")
     public ResponseEntity<List<PurchaseOrder>> getFilteredOrders(
-            @RequestHeader("Authorization") String authHeader,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String date
     ) {
-        String token = authHeader.replace("Bearer ", "");
-        Long userId = securityUtil.extractUserId(token);
-
         LocalDate parsedDate = null;
         if (date != null && !date.isEmpty()) {
             try {
@@ -67,8 +87,10 @@ public class PurchaseOrderController {
         }
 
         String cleanStatus = (status != null && !status.isBlank()) ? status.trim().toLowerCase() : null;
-        return ResponseEntity.ok(purchaseOrderService.getFilteredOrders(cleanStatus, parsedDate, userId));
+        return ResponseEntity.ok(purchaseOrderService.getFilteredOrders(cleanStatus, parsedDate));
     }
+
+
 
     @GetMapping("/getorder/{id}")
     public ResponseEntity<PurchaseOrder> getOrder(@PathVariable Long id) {
@@ -94,5 +116,20 @@ public class PurchaseOrderController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
+    
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<?> updateOrderStatus(
+        @PathVariable Long id,
+        @RequestParam String status,
+        @RequestParam(required = false) String otp
+    ) {
+        try {
+            PurchaseOrder updated = purchaseOrderService.updateOrderStatus(id, status, otp);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
 }
 
